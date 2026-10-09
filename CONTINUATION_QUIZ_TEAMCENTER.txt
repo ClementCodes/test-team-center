@@ -1,0 +1,256 @@
+CONTINUATION DU PROJET - QUIZ TEAMCENTER MOBILE
+Date du point de reprise : 09/10/2026
+
+============================================================
+1. OBJECTIF FINAL
+============================================================
+Créer un quiz Teamcenter utilisable facilement sur téléphone et PC à partir du fichier Excel TC Clément.xlsm.
+
+Fonctions attendues :
+- Choisir un module.
+- Choisir un sous-thème.
+- Apprendre les questions dans l'ordre.
+- Utiliser un ordre aléatoire.
+- Revoir uniquement les erreurs.
+- Afficher immédiatement si la réponse est correcte.
+- Afficher la bonne réponse et le conseil éventuel.
+- Afficher les statistiques globales et par module.
+- Connexion avec un compte Google.
+- Données séparées pour chaque utilisateur.
+- Synchronisation des statistiques entre téléphone et PC.
+- Reprendre une session sur un autre appareil à la même question.
+- Hébergement gratuit avec Firebase Hosting et Firestore, en restant sur le forfait Spark.
+
+============================================================
+2. DONNÉES D'ORIGINE
+============================================================
+Fichier Excel d'origine :
+C:\Users\cdominique\OneDrive - Sopra Steria\index.html
+
+Remarque : ce chemin contient actuellement la copie HTML initiale du quiz, pas le fichier Excel source.
+
+Fichier Excel source utilisé au départ :
+TC Clément.xlsm
+
+Contenu extrait :
+- 353 questions Teamcenter.
+- Modules et sous-thèmes.
+- Choix de réponses.
+- Bonne réponse.
+- Conseils présents dans la colonne Hint.
+
+============================================================
+3. DOSSIER LOCAL DU PROJET FIREBASE
+============================================================
+Dossier de travail :
+C:\Users\cdominique\Desktop\quiz-teamcenter
+
+Fichiers confirmés dans ce dossier :
+- index.html
+- firebase.json
+- .firebaserc
+- .gitignore
+- 404.html
+
+Des sauvegardes ou scripts peuvent aussi être présents selon les manipulations effectuées :
+- index.avant-firebase.html
+- index.stable-avant-google.html
+- index.avant-reprise.html
+- installer-firebase.ps1
+- ajouter-reprise-session.ps1
+- etape1-connexion-google.ps1
+
+IMPORTANT : ne pas exécuter installer-firebase.ps1 ni ajouter-reprise-session.ps1. Ces modifications ont provoqué un dysfonctionnement des listes Module et Sous-thème.
+
+============================================================
+4. FIREBASE
+============================================================
+Projet Firebase :
+- Nom affiché : team-center-test
+- Identifiant : team-center-test-93116
+- Forfait : Spark gratuit
+
+Services configurés :
+- Firebase Hosting : configuré et publié.
+- Firestore : base créée.
+- Firebase Authentication : fournisseur Google activé.
+- Application Web Firebase : créée.
+
+Adresse publique actuelle :
+https://team-center-test-93116.web.app
+
+Console Firebase :
+https://console.firebase.google.com/project/team-center-test-93116/overview
+
+Compte utilisé avec Firebase CLI :
+mrdominiqueclement@gmail.com
+
+Version Firebase CLI installée :
+15.33.0
+
+Commande de publication depuis le dossier du projet :
+firebase deploy --only hosting
+
+============================================================
+5. GITHUB
+============================================================
+Un dépôt GitHub a été créé auparavant :
+- Nom : test-team-center
+- Compte visible pendant la configuration : clementcodes
+
+Une version GitHub Pages avait été activée, mais la solution retenue ensuite est Firebase Hosting.
+GitHub n'est plus nécessaire pour poursuivre le projet.
+
+============================================================
+6. ÉTAT ACTUEL STABLE
+============================================================
+La version publique a été restaurée à une version fonctionnelle du quiz.
+
+Fonctionne actuellement :
+- Chargement des 353 questions.
+- Listes Module et Sous-thème.
+- Ordre normal.
+- Ordre aléatoire.
+- Révision des erreurs.
+- Correction immédiate.
+- Statistiques locales dans le navigateur.
+- Publication Firebase Hosting.
+
+Ne fonctionne pas encore dans la version stable publiée :
+- Bouton de connexion Google.
+- Sauvegarde Firestore par utilisateur.
+- Synchronisation téléphone/PC.
+- Reprise de session entre appareils.
+
+En navigation privée, aucune progression antérieure n'apparaît, car la version stable utilise uniquement le stockage local du navigateur.
+
+============================================================
+7. INCIDENT RENCONTRÉ
+============================================================
+Le premier script Firebase a modifié la variable des statistiques et ajouté Firebase directement dans index.html.
+Après publication, les listes Module et Sous-thème sont devenues vides.
+
+La version fonctionnelle a été restaurée avec une sauvegarde, puis publiée à nouveau.
+
+Règle pour la suite :
+- Partir du fichier index.html stable et fonctionnel.
+- Ajouter une seule fonctionnalité à la fois.
+- Publier et tester après chaque étape.
+- Ne jamais modifier simultanément le moteur du quiz, l'authentification, Firestore et la reprise de session.
+
+============================================================
+8. DERNIÈRE ÉTAPE PRÉPARÉE MAIS PAS ENCORE VALIDÉE
+============================================================
+Un nouveau script minimal a été préparé :
+etape1-connexion-google.ps1
+
+But de ce script :
+- Ajouter uniquement une carte Compte.
+- Ajouter le bouton Se connecter avec Google.
+- Ne pas modifier le moteur du quiz.
+- Ne pas synchroniser encore les statistiques.
+
+À la fin de la conversation précédente, ce script avait été fourni, mais son exécution et sa publication n'avaient pas encore été confirmées.
+
+Avant toute action dans une nouvelle conversation, vérifier d'abord le contenu actuel du dossier :
+C:\Users\cdominique\Desktop\quiz-teamcenter
+
+Commande de vérification :
+dir
+
+Puis vérifier si le fichier suivant est présent :
+etape1-connexion-google.ps1
+
+Ne rien publier avant d'avoir vérifié que le fichier index.html actuel affiche encore correctement les modules et sous-thèmes en local.
+
+============================================================
+9. PLAN DE TRAVAIL À SUIVRE
+============================================================
+ÉTAPE 1 - Connexion Google seulement
+- Ajouter le bouton Google sans toucher aux données du quiz.
+- Tester les listes Module et Sous-thème.
+- Tester le démarrage d'une question.
+- Tester la connexion et la déconnexion dans une fenêtre normale et privée.
+
+ÉTAPE 2 - Firestore par utilisateur
+- Après validation de l'étape 1 seulement.
+- Enregistrer les statistiques sous l'identifiant Firebase de l'utilisateur.
+- Chaque personne doit voir uniquement ses données.
+- Tester avec deux comptes Google différents.
+- Tester le même compte sur téléphone et PC.
+
+ÉTAPE 3 - Reprise de session
+- Après validation de l'étape 2 seulement.
+- Sauvegarder le module, le sous-thème, le mode, l'ordre exact des questions et la position actuelle.
+- Ajouter un bouton Reprendre ma session.
+- Tester le passage téléphone vers PC et PC vers téléphone.
+
+============================================================
+10. TESTS OBLIGATOIRES APRÈS CHAQUE PUBLICATION
+============================================================
+1. Ouvrir https://team-center-test-93116.web.app
+2. Forcer le rechargement avec Ctrl + F5 sur PC.
+3. Vérifier que Module contient des valeurs.
+4. Vérifier que Sous-thème contient des valeurs.
+5. Lancer une question.
+6. Répondre et vérifier la correction.
+7. Vérifier les statistiques.
+8. Tester la nouvelle fonctionnalité ajoutée.
+9. Seulement si tous les tests passent, continuer à l'étape suivante.
+
+============================================================
+11. COMMANDES UTILES
+============================================================
+Se placer dans le dossier du projet :
+cd "$HOME\Desktop\quiz-teamcenter"
+
+Lister les fichiers :
+dir
+
+Vérifier la connexion Firebase :
+firebase login:list
+
+Publier Firebase Hosting :
+firebase deploy --only hosting
+
+Restaurer la sauvegarde stable avant Google si elle existe :
+Copy-Item ".\index.stable-avant-google.html" ".\index.html" -Force
+
+Restaurer la sauvegarde antérieure à la première intégration Firebase si nécessaire :
+Copy-Item ".\index.avant-firebase.html" ".\index.html" -Force
+
+IMPORTANT : toujours vérifier le nom exact de la sauvegarde avec dir avant une restauration.
+
+============================================================
+12. CONSIGNES POUR LA NOUVELLE CONVERSATION
+============================================================
+- Lire ce fichier avant toute commande.
+- Procéder étape par étape.
+- Expliquer l'objectif de chaque action.
+- Toujours indiquer le chemin exact du fichier concerné.
+- Ne jamais supposer qu'un fichier a été téléchargé ou déplacé.
+- Demander une sortie de commande ou une capture avant de poursuivre si l'état réel n'est pas confirmé.
+- Ne modifier qu'une fonctionnalité à la fois.
+- Maintenir une sauvegarde du index.html fonctionnel avant chaque modification.
+
+
+============================================================
+13. MISE A JOUR 09/10/2026 - PROJET TERMINE ET VALIDE
+============================================================
+Etapes terminees et validees en ligne :
+- Etape 1 : connexion Google (cle API corrigee : O majuscule et non zero).
+- Etape 2 : synchronisation des statistiques via Firestore (document users/{uid}, champ json).
+- Etape 3 : reprise de session (champ session du meme document, bouton "Reprendre ma session").
+
+Regles Firestore : fichier firestore.rules (chaque utilisateur accede uniquement a users/son-uid).
+Publication des regles : firebase deploy --only firestore:rules
+Publication du site   : firebase deploy --only hosting
+
+Organisation du dossier :
+- Fichiers actifs : index.html, 404.html, firebase.json, firestore.rules, .firebaserc, .gitignore.
+- Dossier archive\ (non publie) : anciens scripts et sauvegardes.
+  Sauvegarde de reference : archive\index.v-fonctionnelle-complete.html
+- NE JAMAIS executer les anciens scripts .ps1 de archive\.
+- Restauration : Copy-Item ".\archive\index.v-fonctionnelle-complete.html" ".\index.html" -Force
+
+Forfait : Spark gratuit conserve (ecritures regroupees, lectures limitees).
