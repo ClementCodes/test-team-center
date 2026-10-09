@@ -273,3 +273,7 @@ Forfait : Spark gratuit conserve (ecritures regroupees, lectures limitees).
 Ordre de chargement important (voir index.html). archive\ n'est pas publie.
 Ancienne version monolithique : archive\index.monolithe-avant-decoupage.html
 Cache : firebase.json force Cache-Control no-cache sur js/css/html.
+
+16. UX (10/10/2026)
+- js/ui.js : aide, double-clic/double-tap pour valider, Entree et touches 1-9, bouton Themes dans l'en-tete.
+- README.md ajoute (non publie sur Hosting).

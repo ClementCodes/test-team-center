@@ -8,6 +8,7 @@
       "firebase.json",
       "firestore.rules",
       "archive/**",
+      "README.md",
       "**/.*",
       "**/node_modules/**",
       "**/*.ps1",
