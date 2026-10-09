@@ -8,14 +8,12 @@ document.getElementById('helpBtn').onclick=()=>setHelp(true);
 document.getElementById('helpClose').onclick=()=>setHelp(false);
 helpModal.addEventListener('click',e=>{if(e.target===helpModal)setHelp(false)});
 
-let lastBtn=null,lastTime=0;
 document.getElementById('answers').addEventListener('click',e=>{
   const b=e.target.closest('button.answer');
-  if(!b||answered)return;
-  const now=Date.now();
-  if(b===lastBtn&&now-lastTime<400){lastBtn=null;document.getElementById('validate').click()}
-  else{lastBtn=b;lastTime=now}
-});
+  if(!b||answered||!b.classList.contains('selected'))return;
+  e.stopPropagation();
+  document.getElementById('validate').click();
+},true);
 
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape')setHelp(false);

@@ -8,7 +8,7 @@ Hébergé gratuitement avec Firebase (forfait Spark) : https://team-center-test-
 - Choix d'un **module** et d'un **sous-thème**.
 - Trois modes : dans l'ordre, aléatoire, revoir mes erreurs (erreurs de la session en cours).
 - Correction immédiate avec bonne réponse et conseil.
-- Validation par **Valider**, par **double-clic / double-tap** sur une réponse, ou avec **Entrée** (PC). Touches 1 à 9 pour choisir une réponse.
+- Validation par **Valider**, en touchant une **deuxième fois la réponse déjà sélectionnée**, ou avec **Entrée** (PC). Touches 1 à 9 pour choisir une réponse.
 - **Sessions** : démarrer une session en met automatiquement une autre en pause ; reprise sur n'importe quel appareil.
 - **Statistiques par session** (en cours, en pause, terminées) : bonnes/mauvaises réponses, réussite, détail par module. 25 sessions conservées de chaque type.
 - Connexion **Google** : sessions et statistiques synchronisées entre appareils (données séparées par utilisateur).
