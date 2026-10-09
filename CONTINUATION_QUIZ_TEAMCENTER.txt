@@ -260,3 +260,16 @@ Forfait : Spark gratuit conserve (ecritures regroupees, lectures limitees).
 - Demarrer ou reprendre une autre session met l'active en pause automatiquement.
 - Liste "Sessions en pause" dans la carte Compte (Reprendre / Supprimer).
 - Sauvegarde avant cette etape : archive\index.stable-avant-pauses.html
+
+15. DECOUPAGE EN FICHIERS (10/10/2026)
+- index.html          : structure HTML + chargement des scripts
+- css/style.css       : styles
+- data/questions.js   : les 353 questions (const Q)
+- js/quiz.js          : moteur du quiz et statistiques locales
+- js/firebase-config.js : configuration Firebase
+- js/auth.js          : connexion / deconnexion Google
+- js/sync-stats.js    : synchronisation des statistiques (Firestore)
+- js/sessions.js      : session active et sessions en pause
+Ordre de chargement important (voir index.html). archive\ n'est pas publie.
+Ancienne version monolithique : archive\index.monolithe-avant-decoupage.html
+Cache : firebase.json force Cache-Control no-cache sur js/css/html.

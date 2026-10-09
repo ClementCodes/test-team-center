@@ -7,12 +7,19 @@
     "ignore": [
       "firebase.json",
       "firestore.rules",
+      "archive/**",
       "**/.*",
       "**/node_modules/**",
       "**/*.ps1",
-      "**/*.txt",
-      "index.avant-*.html",
-      "index.stable-*.html"
+      "**/*.txt"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css|html)",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      }
     ]
   }
 }
