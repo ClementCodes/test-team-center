@@ -254,3 +254,9 @@ Organisation du dossier :
 - Restauration : Copy-Item ".\archive\index.v-fonctionnelle-complete.html" ".\index.html" -Force
 
 Forfait : Spark gratuit conserve (ecritures regroupees, lectures limitees).
+
+14. SESSIONS EN PAUSE (10/10/2026)
+- Document users/{uid} : champ session (active) + champ paused (max 10).
+- Demarrer ou reprendre une autre session met l'active en pause automatiquement.
+- Liste "Sessions en pause" dans la carte Compte (Reprendre / Supprimer).
+- Sauvegarde avant cette etape : archive\index.stable-avant-pauses.html
