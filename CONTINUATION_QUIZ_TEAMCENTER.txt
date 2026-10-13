@@ -277,3 +277,9 @@ Cache : firebase.json force Cache-Control no-cache sur js/css/html.
 16. UX (10/10/2026)
 - js/ui.js : aide, double-clic/double-tap pour valider, Entree et touches 1-9, bouton Themes dans l'en-tete.
 - README.md ajoute (non publie sur Hosting).
+
+
+17. TRADUCTION FRANCAISE (13/10/2026)
+- data/translations-fr.js (const FR, par id) : 353 questions, 1361 reponses, 12 conseils, traduits par IA.
+- Bouton FR/EN pres du compteur (js/ui.js) : francais sous l'anglais, retour a l'anglais a chaque question.
+- Corriger une traduction : editer data/translations-fr.js (garder le meme nombre de reponses, meme ordre).

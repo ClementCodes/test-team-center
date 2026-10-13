@@ -12,6 +12,7 @@ Hébergé gratuitement avec Firebase (forfait Spark) : https://team-center-test-
 - **Sessions** : démarrer une session en met automatiquement une autre en pause ; reprise sur n'importe quel appareil.
 - **Statistiques par session** (en cours, en pause, terminées) : bonnes/mauvaises réponses, réussite, détail par module. 25 sessions conservées de chaque type.
 - Connexion **Google** : sessions et statistiques synchronisées entre appareils (données séparées par utilisateur).
+- Traduction française à la demande : bouton **FR** à côté du compteur (question, réponses et conseil affichés sous l'anglais ; retour à l'anglais à chaque question).
 - Aide intégrée (bouton « ? Aide »).
 
 ## Structure
@@ -20,6 +21,7 @@ Hébergé gratuitement avec Firebase (forfait Spark) : https://team-center-test-
 index.html              structure HTML et chargement des scripts
 css/style.css           styles
 data/questions.js       les questions (const Q)
+data/translations-fr.js traductions françaises (const FR, indexées par id de question)
 js/quiz.js              moteur du quiz (modules, modes, correction)
 js/ui.js                interface : aide, double-clic, clavier, bouton « ← Thèmes »
 js/firebase-config.js   configuration Firebase (clé web, publique par conception)
