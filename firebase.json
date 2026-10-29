@@ -16,7 +16,9 @@
       "**/*.exe",
       ".idea/**",
       "tests/**",
-      "package.json"
+      "e2e/**",
+      "package.json",
+      "package-lock.json"
     ],
     "headers": [
       {

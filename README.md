@@ -67,6 +67,15 @@ npm test
 
 À lancer avant chaque déploiement.
 
+Test navigateur (Chrome doit être installé ; `npm install` une fois au préalable) :
+
+```
+npm run e2e                                              # version locale
+npm run e2e -- https://team-center-test-93116.web.app/   # site en ligne
+```
+
+`e2e/resume.e2e.js` vérifie que la position est conservée après plusieurs rechargements (Ctrl + Maj + R), un changement d'onglet et l'ouverture d'un nouvel onglet.
+
 ## Déployer
 
 ```

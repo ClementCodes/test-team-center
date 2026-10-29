@@ -24,7 +24,7 @@ function clean(s){const{done,progressed,...r}=s;return r}
 function addPaused(s){paused=upsert(paused,s,MAX)}
 function addFinished(s){finished=upsert(finished,s,MAX)}
 function archive(b){if(!b)return;if(b.done)addFinished(clean(b));else if(b.progressed)addPaused(clean(b))}
-function saveLocal(){const s=snap();try{if(!s||s.done){localS=null;localStorage.removeItem(LS)}else{activeId=s.id;localS=clean(s);localStorage.setItem(LS,JSON.stringify(localS))}}catch(e){}}
+function saveLocal(){const s=snap();if(!s)return;try{if(s.done){localS=null;localStorage.removeItem(LS)}else{activeId=s.id;localS=clean(s);localStorage.setItem(LS,JSON.stringify(localS))}}catch(e){}}
 function latest(want,withPaused){const skip=new Set([activeId,...finished.map(f=>f.id)]);const s=pickLatest([user&&active,localS,...(user&&withPaused?paused:[])],want,skip);return s&&[s,paused.some(p=>p.id===s.id)]}
 async function persist(){if(!user||!loaded)return;clearTimeout(timer);pending=false;try{await setDoc(ref(),{session:active,paused,finished},{merge:true})}catch(e){}}
 function schedule(){pending=true;clearTimeout(timer);timer=setTimeout(store,1500)}
