@@ -44,16 +44,18 @@ window.renderStats=function(){baseStats();renderSess()};
 const vb=document.getElementById('validate'),baseValidate=vb.onclick;
 vb.onclick=function(e){const r=baseValidate.call(this,e);saveLocal();schedule();return r};
 const st=document.getElementById('start'),baseStart=st.onclick;
-st.onclick=async function(e){const want=sel();
+let busy=false;
+st.onclick=async function(e){if(busy)return;const want=sel();
 if(pool.length){const s=snap();if(same(s,want)&&!s.done){showTab('quiz');return}}
-if(user&&!loaded)await load();
+busy=true;const label=st.textContent;st.textContent='Chargement\u2026';try{await Promise.race([authReady,new Promise(r=>setTimeout(r,5000))]);if(user&&!loaded)await Promise.race([loadP||(loadP=load()),new Promise(r=>setTimeout(r,8000))])}finally{busy=false;st.textContent=label}
 const m=latest(want,true);if(m){resume(m[0],m[1]);return}
 const before=snap(),prev=pool,oldId=activeId,prevLocal=localS,c=sel();baseStart.call(this,e);if(!pool.length||pool===prev)return;stats={answers:{},history:[]};save();cur=c;activeId=null;saveLocal();if(!user){ui();return}
 archive(before);if(active&&active.id!==oldId&&active.id!==activeId)addPaused(active);
 if(prevLocal&&prevLocal.id!==oldId&&!(active&&active.id===prevLocal.id)&&!paused.some(p=>p.id===prevLocal.id)&&!finished.some(f=>f.id===prevLocal.id)&&(prevLocal.pos>0||(prevLocal.h||[]).length))addPaused(prevLocal);
 active=null;persist();schedule();ui()};
 function flush(){saveLocal();if(pending&&loaded)store()}
-onAuthStateChanged(auth,u=>{user=u;loaded=false;active=null;paused=[];finished=[];ui();if(u)load()});
+let resolveAuth;const authReady=new Promise(r=>resolveAuth=r);let loadP=null;
+onAuthStateChanged(auth,u=>{user=u;loaded=false;active=null;paused=[];finished=[];ui();loadP=u?load():null;resolveAuth()});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')load();else flush()});
 window.addEventListener('pagehide',flush);
 ui();
