@@ -10,9 +10,9 @@ const sty=document.createElement('style');sty.textContent='#stats>:not(#sessStat
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const qm=new Map(Q.map(q=>[q.id,q]));
 const sel=()=>({module:document.getElementById('module').value,subtopic:document.getElementById('subtopic').value,mode});
-const same=(s,c)=>!!(c.mode!=='errors'&&s&&s.ids&&s.ids.length&&s.module===c.module&&s.subtopic===c.subtopic&&(!s.mode||s.mode===c.mode));
-window.errIds=function(){const m=new Map(),add=x=>{const p=m.get(x[0]);if(!p||x[2]>=p[1])m.set(x[0],[x[1],x[2]||0])};if(user){if(active)(active.h||[]).forEach(add);paused.forEach(s=>(s.h||[]).forEach(add));finished.forEach(s=>(s.h||[]).forEach(add))}stats.history.forEach(x=>add([x.id,x.ok?1:0,x.at]));Q.forEach(q=>{const l=last[q.id];if(l)add([q.id,l[0],l[1]])});return new Set([...m].filter(e=>!e[1][0]).map(e=>e[0]))};
-function fromH(h){const answers={},history=[];for(const[id,ok,at]of(h||[])){const r=answers[id]||(answers[id]={ok:0,wrong:0});ok?r.ok++:r.wrong++;history.push({id,ok:!!ok,module:(qm.get(id)||{}).module,at})}return{answers,history}}
+const same=sameSession;
+window.errIds=function(){const e=[];if(user){if(active)e.push(...(active.h||[]));paused.forEach(s=>e.push(...(s.h||[])));finished.forEach(s=>e.push(...(s.h||[])))}stats.history.forEach(x=>e.push([x.id,x.ok?1:0,x.at]));Q.forEach(q=>{const l=last[q.id];if(l)e.push([q.id,l[0],l[1]])});return lastErrors(e)};
+const fromH=h=>statsFromH(h,id=>(qm.get(id)||{}).module);
 const cnt=s=>{const h=s.h||[],k=h.filter(x=>x[1]).length;return h.length?' \u00b7 '+k+' bonne(s) \u00b7 '+(h.length-k)+' mauvaise(s)':''};
 const title=s=>(s.module==='*'?'Tous modules':s.module)+' \u00b7 '+(s.subtopic==='*'?'Tous sous-th\u00e8mes':s.subtopic);
 const dt=s=>new Date(s.at).toLocaleDateString('fr-FR');
@@ -20,9 +20,8 @@ const lab=s=>title(s)+' \u00b7 '+(s.pos+1)+'/'+s.ids.length+' \u00b7 '+dt(s)+cnt
 const ref=()=>doc(db,'users',user.uid);
 function snap(){if(!pool.length)return null;const c=cur||sel();return{id:activeId||newId(),ids:pool.map(q=>q.id),pos,module:c.module,subtopic:c.subtopic,mode:c.mode||'order',h:stats.history.map(x=>[x.id,x.ok?1:0,x.at]),at:Date.now(),done:pos===pool.length-1&&answered,progressed:pos>0||answered}}
 function clean(s){const{done,progressed,...r}=s;return r}
-const byDate=(a,b)=>b.at-a.at;
-function addPaused(s){paused=[s,...paused.filter(x=>x.id!==s.id)].sort(byDate).slice(0,MAX)}
-function addFinished(s){finished=[s,...finished.filter(x=>x.id!==s.id)].sort(byDate).slice(0,MAX)}
+function addPaused(s){paused=upsert(paused,s,MAX)}
+function addFinished(s){finished=upsert(finished,s,MAX)}
 function archive(b){if(!b)return;if(b.done)addFinished(clean(b));else if(b.progressed)addPaused(clean(b))}
 async function persist(){if(!user)return;clearTimeout(timer);pending=false;try{await setDoc(ref(),{session:active,paused,finished},{merge:true})}catch(e){}}
 function schedule(){pending=true;clearTimeout(timer);timer=setTimeout(store,1500)}

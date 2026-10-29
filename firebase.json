@@ -14,7 +14,9 @@
       "**/*.ps1",
       "**/*.txt",
       "**/*.exe",
-      ".idea/**"
+      ".idea/**",
+      "tests/**",
+      "package.json"
     ],
     "headers": [
       {

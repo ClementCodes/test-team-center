@@ -25,9 +25,7 @@ const quizCard=document.querySelector('#quiz>.card');
 const endBox=document.createElement('div');endBox.id='endScreen';endBox.className='card hidden';document.getElementById('quiz').append(endBox);
 window.render=function(){endBox.classList.add('hidden');quizCard.classList.remove('hidden');baseRenderUi();frOn=false;applyFr()};
 window.endScreen=function(){
-  const res=new Map();stats.history.forEach(x=>res.set(x.id,x.ok));
-  const k=[...res.values()].filter(Boolean).length,n=res.size;
-  const missed=pool.filter(q=>res.get(q.id)===false);
+  const{k,n,missed}=endSummary(stats.history,pool);
   endBox.innerHTML='<h2>Session termin\u00e9e \u{1F389}</h2><div class="stats-grid"><div class="stat"><b>'+k+'</b>bonnes</div><div class="stat"><b>'+(n-k)+'</b>rat\u00e9es</div><div class="stat"><b>'+(n?Math.round(k/n*100):0)+'%</b>r\u00e9ussite</div></div>'
     +(missed.length?'<h3 style="margin-top:14px">Questions rat\u00e9es</h3>'+missed.map(q=>'<div class="stat" style="text-align:left;margin-top:8px"><div>'+esc(q.question)+'</div><div class="muted" style="margin-top:4px">\u2705 '+esc(q.answers[q.right])+'</div></div>').join(''):'<p class="muted" style="margin-top:12px">Aucune erreur, bravo !</p>');
   const btn=(t,cls,f)=>{const b=document.createElement('button');b.className=cls;b.style.cssText='width:100%;margin-top:8px';b.textContent=t;b.onclick=f;endBox.append(b)};

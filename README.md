@@ -25,6 +25,7 @@ index.html              structure HTML et chargement des scripts
 css/style.css           styles
 data/questions.js       les questions (const Q)
 data/teamcenter_fr.js   traductions françaises (const FR, indexées par id de question)
+js/logic.js             logique pure (mélange, erreurs, sessions, bilan), testée unitairement
 js/quiz.js              moteur du quiz (modules, modes, correction)
 js/ui.js                interface : aide, FR, double appui, clavier, bilan de fin
 js/firebase-config.js   configuration Firebase (clé web, publique par conception)
@@ -32,6 +33,7 @@ js/auth.js              connexion / déconnexion Google
 js/sessions.js          sessions, statistiques par session, erreurs globales, synchronisation Firestore
 firestore.rules         règles de sécurité Firestore
 firebase.json           configuration Hosting / Firestore
+tests/                  tests unitaires (non publiés)
 ```
 
 L'ordre de chargement des scripts dans `index.html` est important.
@@ -51,6 +53,19 @@ python -m http.server 8080
 ```
 
 puis ouvrir http://localhost:8080 (ajouter `localhost` aux domaines autorisés dans Firebase Authentication si besoin).
+
+## Tests
+
+Tests unitaires avec le testeur intégré de Node (aucune dépendance à installer) :
+
+```
+npm test
+```
+
+- `tests/logic.test.js` : mélange des réponses, erreurs à revoir, reprise de session, statistiques, bilan.
+- `tests/data.test.js` : cohérence des questions et de la traduction FR (ids, bonne réponse, nombre de réponses, accents).
+
+À lancer avant chaque déploiement.
 
 ## Déployer
 
