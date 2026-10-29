@@ -9,14 +9,16 @@ const box=document.createElement('div');box.className='hidden';logout.after(box)
 const sty=document.createElement('style');sty.textContent='#stats>:not(#sessStats){display:none!important}';document.head.append(sty);
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const qm=new Map(Q.map(q=>[q.id,q]));
-const sel=()=>({module:document.getElementById('module').value,subtopic:document.getElementById('subtopic').value});
+const sel=()=>({module:document.getElementById('module').value,subtopic:document.getElementById('subtopic').value,mode});
+const same=(s,c)=>!!(c.mode!=='errors'&&s&&s.ids&&s.ids.length&&s.module===c.module&&s.subtopic===c.subtopic&&(!s.mode||s.mode===c.mode));
+window.errIds=function(){const m=new Map(),add=x=>{const p=m.get(x[0]);if(!p||x[2]>=p[1])m.set(x[0],[x[1],x[2]||0])};if(user){if(active)(active.h||[]).forEach(add);paused.forEach(s=>(s.h||[]).forEach(add));finished.forEach(s=>(s.h||[]).forEach(add))}stats.history.forEach(x=>add([x.id,x.ok?1:0,x.at]));Q.forEach(q=>{const l=last[q.id];if(l)add([q.id,l[0],l[1]])});return new Set([...m].filter(e=>!e[1][0]).map(e=>e[0]))};
 function fromH(h){const answers={},history=[];for(const[id,ok,at]of(h||[])){const r=answers[id]||(answers[id]={ok:0,wrong:0});ok?r.ok++:r.wrong++;history.push({id,ok:!!ok,module:(qm.get(id)||{}).module,at})}return{answers,history}}
 const cnt=s=>{const h=s.h||[],k=h.filter(x=>x[1]).length;return h.length?' \u00b7 '+k+' bonne(s) \u00b7 '+(h.length-k)+' mauvaise(s)':''};
 const title=s=>(s.module==='*'?'Tous modules':s.module)+' \u00b7 '+(s.subtopic==='*'?'Tous sous-th\u00e8mes':s.subtopic);
 const dt=s=>new Date(s.at).toLocaleDateString('fr-FR');
 const lab=s=>title(s)+' \u00b7 '+(s.pos+1)+'/'+s.ids.length+' \u00b7 '+dt(s)+cnt(s);
 const ref=()=>doc(db,'users',user.uid);
-function snap(){if(!pool.length)return null;const c=cur||sel();return{id:activeId||newId(),ids:pool.map(q=>q.id),pos,module:c.module,subtopic:c.subtopic,h:stats.history.map(x=>[x.id,x.ok?1:0,x.at]),at:Date.now(),done:pos===pool.length-1&&answered,progressed:pos>0||answered}}
+function snap(){if(!pool.length)return null;const c=cur||sel();return{id:activeId||newId(),ids:pool.map(q=>q.id),pos,module:c.module,subtopic:c.subtopic,mode:c.mode||'order',h:stats.history.map(x=>[x.id,x.ok?1:0,x.at]),at:Date.now(),done:pos===pool.length-1&&answered,progressed:pos>0||answered}}
 function clean(s){const{done,progressed,...r}=s;return r}
 const byDate=(a,b)=>b.at-a.at;
 function addPaused(s){paused=[s,...paused.filter(x=>x.id!==s.id)].sort(byDate).slice(0,MAX)}
@@ -31,7 +33,7 @@ function renderBox(){box.textContent='';const showActive=user&&active&&active.id
 function card(o){const h=o.h||[],k=h.filter(x=>x[1]).length,n=h.length,mods={};h.forEach(x=>{const m=(qm.get(x[0])||{}).module||'?',r=mods[m]||(mods[m]=[0,0]);r[1]++;if(x[1])r[0]++});const rows=Object.keys(mods).map(m=>{const r=mods[m];return '<tr><td>'+esc(m)+'</td><td>'+r[0]+'/'+r[1]+'</td><td>'+Math.round(r[0]/r[1]*100)+'%</td></tr>'}).join('');const d=document.createElement('div');d.className='card';d.style.marginTop='12px';d.innerHTML='<h3>'+esc(o.title)+'</h3><p class="muted">'+esc(o.sub)+'</p><div class="stats-grid"><div class="stat"><b>'+k+'</b>bonnes</div><div class="stat"><b>'+(n-k)+'</b>mauvaises</div><div class="stat"><b>'+(n?Math.round(k/n*100):0)+'%</b>r\u00e9ussite</div></div>'+(rows?'<table style="margin-top:10px"><thead><tr><th>Module</th><th>Bonnes</th><th>Score</th></tr></thead><tbody>'+rows+'</tbody></table>':'');(o.actions||[]).forEach(a=>{const b=document.createElement('button');b.className='secondary';b.style.cssText='width:100%;margin-top:8px';b.textContent=a[0];b.onclick=a[1];d.append(b)});return d}
 function renderSess(){let c=document.getElementById('sessStats');if(!c){c=document.createElement('div');c.id='sessStats';document.getElementById('stats').append(c)}c.textContent='';const sec=t=>{const p=document.createElement('h3');p.textContent=t;p.style.margin='16px 4px 0';c.append(p)};if(pool.length&&!finished.some(f=>f.id===activeId)){sec('Session en cours');c.append(card({title:title(cur||sel()),sub:'Question '+(pos+1)+'/'+pool.length,h:stats.history.map(x=>[x.id,x.ok?1:0,x.at])}))}if(paused.length){sec('Sessions en pause');paused.forEach(s=>c.append(card({title:title(s),sub:'Question '+(s.pos+1)+'/'+s.ids.length+' \u00b7 '+dt(s),h:s.h,actions:[['Reprendre',()=>resume(s,true)],['Supprimer',()=>del('paused',s.id)]]})))}if(finished.length){sec('Sessions termin\u00e9es');finished.forEach(s=>c.append(card({title:title(s),sub:'Termin\u00e9e \u00b7 '+s.ids.length+' questions \u00b7 '+dt(s),h:s.h,actions:[['Supprimer',()=>del('finished',s.id)]]})))}if(!c.children.length){const p=document.createElement('div');p.className='empty';p.textContent='Aucune session pour le moment.';c.append(p)}}
 function ui(){renderBox();renderSess()}
-function resume(s,fromPaused){const list=s.ids.map(id=>Q.find(q=>q.id===id)).filter(Boolean);if(!list.length)return;const before=snap(),oldId=activeId;if(before&&before.id!==s.id)archive(before);if(active&&active.id!==s.id&&active.id!==oldId)addPaused(active);if(fromPaused)paused=paused.filter(x=>x.id!==s.id);pool=list;pos=Math.min(s.pos,list.length-1);stats=fromH(s.h);save();activeId=s.id;cur={module:s.module,subtopic:s.subtopic};active={...s};showTab('quiz');window.render();persist();schedule();ui()}
+function resume(s,fromPaused){const list=s.ids.map(id=>Q.find(q=>q.id===id)).filter(Boolean);if(!list.length)return;const before=snap(),oldId=activeId;if(before&&before.id!==s.id)archive(before);if(active&&active.id!==s.id&&active.id!==oldId)addPaused(active);if(fromPaused)paused=paused.filter(x=>x.id!==s.id);pool=s.mode==='random'?list.map(shuf):list;pos=Math.min(s.pos,list.length-1);stats=fromH(s.h);save();activeId=s.id;cur={module:s.module,subtopic:s.subtopic,mode:s.mode};active={...s};showTab('quiz');window.render();persist();schedule();ui()}
 async function load(){if(!user||pending)return;try{const s=await getDoc(ref());const d=s.exists()?s.data():{};active=d.session||null;if(active&&!active.id)active.id='legacy';paused=Array.isArray(d.paused)?d.paused:[];finished=Array.isArray(d.finished)?d.finished:[];ui()}catch(e){}}
 const baseRender=window.render;
 window.render=function(){baseRender();schedule()};
@@ -40,7 +42,10 @@ window.renderStats=function(){baseStats();renderSess()};
 const vb=document.getElementById('validate'),baseValidate=vb.onclick;
 vb.onclick=function(e){const r=baseValidate.call(this,e);schedule();return r};
 const st=document.getElementById('start'),baseStart=st.onclick;
-st.onclick=function(e){const before=user?snap():null,prev=pool,oldId=activeId,c=sel();baseStart.call(this,e);if(!pool.length||pool===prev)return;stats={answers:{},history:[]};save();cur=c;if(!user){activeId=null;ui();return}archive(before);if(active&&active.id!==oldId)addPaused(active);activeId=null;active=null;persist();schedule();ui()};
+st.onclick=function(e){const want=sel();
+if(pool.length){const s=snap();if(same(s,want)&&!s.done){showTab('quiz');return}}
+if(user){if(same(active,want)&&active.id!==activeId){resume(active,false);return}const p=paused.find(s=>same(s,want));if(p){resume(p,true);return}}
+const before=user?snap():null,prev=pool,oldId=activeId,c=sel();baseStart.call(this,e);if(!pool.length||pool===prev)return;stats={answers:{},history:[]};save();cur=c;if(!user){activeId=null;ui();return}archive(before);if(active&&active.id!==oldId)addPaused(active);activeId=null;active=null;persist();schedule();ui()};
 onAuthStateChanged(auth,u=>{user=u;active=null;paused=[];finished=[];ui();if(u)load()});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')load()});
 ui();

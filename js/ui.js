@@ -16,11 +16,32 @@ function applyFr(){
   add(document.getElementById('question').parentNode,d.q,'fr-q');
   const qEl=document.getElementById('question'),frQ=qEl.parentNode.querySelector('.fr-q');
   if(frQ)qEl.after(frQ);
-  document.querySelectorAll('#answers button.answer').forEach((b,i)=>add(b.children[1],d.a&&d.a[i]));
+  const pq=pool[pos];
+  document.querySelectorAll('#answers button.answer').forEach((b,i)=>add(b.children[1],d.a&&d.a[pq.perm?pq.perm[i]:i]));
   const fb=document.getElementById('feedback');
   if(answered&&d.h&&!fb.classList.contains('hidden'))add(fb,'\u{1F4A1} '+d.h,'fr-h');
 }
-window.render=function(){baseRenderUi();frOn=false;applyFr()};
+const quizCard=document.querySelector('#quiz>.card');
+const endBox=document.createElement('div');endBox.id='endScreen';endBox.className='card hidden';document.getElementById('quiz').append(endBox);
+window.render=function(){endBox.classList.add('hidden');quizCard.classList.remove('hidden');baseRenderUi();frOn=false;applyFr()};
+window.endScreen=function(){
+  const res=new Map();stats.history.forEach(x=>res.set(x.id,x.ok));
+  const k=[...res.values()].filter(Boolean).length,n=res.size;
+  const missed=pool.filter(q=>res.get(q.id)===false);
+  endBox.innerHTML='<h2>Session termin\u00e9e \u{1F389}</h2><div class="stats-grid"><div class="stat"><b>'+k+'</b>bonnes</div><div class="stat"><b>'+(n-k)+'</b>rat\u00e9es</div><div class="stat"><b>'+(n?Math.round(k/n*100):0)+'%</b>r\u00e9ussite</div></div>'
+    +(missed.length?'<h3 style="margin-top:14px">Questions rat\u00e9es</h3>'+missed.map(q=>'<div class="stat" style="text-align:left;margin-top:8px"><div>'+esc(q.question)+'</div><div class="muted" style="margin-top:4px">\u2705 '+esc(q.answers[q.right])+'</div></div>').join(''):'<p class="muted" style="margin-top:12px">Aucune erreur, bravo !</p>');
+  const btn=(t,cls,f)=>{const b=document.createElement('button');b.className=cls;b.style.cssText='width:100%;margin-top:8px';b.textContent=t;b.onclick=f;endBox.append(b)};
+  if(missed.length)btn('Refaire mes erreurs de cette session','primary',()=>{
+    window.errOnly=new Set(missed.map(q=>q.id));mode='errors';
+    document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('active',x.dataset.mode==='errors'));
+    document.getElementById('start').click();
+  });
+  btn('Retour \u00e0 l\u2019accueil','secondary',()=>showTab('home'));
+  btn('Voir les statistiques','secondary',()=>showTab('stats'));
+  quizCard.classList.add('hidden');endBox.classList.remove('hidden');
+  document.getElementById('bar').style.width='100%';
+  window.scrollTo(0,0);
+};
 frBtn.onclick=()=>{frOn=!frOn;applyFr()};
 document.getElementById('validate').addEventListener('click',()=>{if(frOn)setTimeout(applyFr,0)});
 

@@ -6,7 +6,10 @@ Hébergé gratuitement avec Firebase (forfait Spark) : https://team-center-test-
 ## Fonctionnalités
 
 - Choix d'un **module** et d'un **sous-thème**.
-- Trois modes : dans l'ordre, aléatoire, revoir mes erreurs (erreurs de la session en cours).
+- Trois modes : dans l'ordre, aléatoire (questions **et réponses** mélangées), revoir mes erreurs.
+- **Revoir mes erreurs** : questions dont la dernière réponse était fausse, toutes sessions confondues (sessions synchronisées si connecté + historique local de l'appareil). Une question sort de la liste dès qu'elle est réussie.
+- **Bilan de fin de session** : score, questions ratées avec la bonne réponse, bouton « Refaire mes erreurs de cette session ».
+- **Reprise automatique** : « Commencer » avec le même module, sous-thème et mode reprend la session non terminée.
 - Correction immédiate avec bonne réponse et conseil.
 - Validation par **Valider**, en touchant une **deuxième fois la réponse déjà sélectionnée**, ou avec **Entrée** (PC). Touches 1 à 9 pour choisir une réponse.
 - **Sessions** : démarrer une session en met automatiquement une autre en pause ; reprise sur n'importe quel appareil.
@@ -21,15 +24,14 @@ Hébergé gratuitement avec Firebase (forfait Spark) : https://team-center-test-
 index.html              structure HTML et chargement des scripts
 css/style.css           styles
 data/questions.js       les questions (const Q)
-data/translations-fr.js traductions françaises (const FR, indexées par id de question)
+data/teamcenter_fr.js   traductions françaises (const FR, indexées par id de question)
 js/quiz.js              moteur du quiz (modules, modes, correction)
-js/ui.js                interface : aide, double-clic, clavier, bouton « ← Thèmes »
+js/ui.js                interface : aide, FR, double appui, clavier, bilan de fin
 js/firebase-config.js   configuration Firebase (clé web, publique par conception)
 js/auth.js              connexion / déconnexion Google
-js/sessions.js          sessions, statistiques par session, synchronisation Firestore
+js/sessions.js          sessions, statistiques par session, erreurs globales, synchronisation Firestore
 firestore.rules         règles de sécurité Firestore
 firebase.json           configuration Hosting / Firestore
-archive/                anciennes versions et scripts (non publié)
 ```
 
 L'ordre de chargement des scripts dans `index.html` est important.
