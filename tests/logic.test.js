@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const{shuf,lastErrors,sameSession,statsFromH,upsert,endSummary}=require('../js/logic.js');
+const{shuf,lastErrors,sameSession,statsFromH,upsert,endSummary,pickLatest}=require('../js/logic.js');
 
 const seq=vals=>{let i=0;return()=>vals[i++%vals.length]};
 
@@ -85,4 +85,16 @@ test('endSummary : score et questions ratées (dernière réponse)', ()=>{
   assert.equal(r.k,2);
   assert.equal(r.n,3);
   assert.deepEqual(r.missed.map(q=>q.id),[2]);
+});
+
+test('pickLatest : reprend la session la plus récente qui correspond', ()=>{
+  const want={module:'M',subtopic:'S',mode:'order'};
+  const local={id:'a',ids:[1,2,3],pos:1,module:'M',subtopic:'S',mode:'order',at:200};
+  const remote={id:'a',ids:[1,2,3],pos:0,module:'M',subtopic:'S',mode:'order',at:100};
+  const other={id:'b',ids:[1],pos:0,module:'X',subtopic:'S',mode:'order',at:300};
+  assert.equal(pickLatest([remote,local,other],want,new Set()),local);
+  assert.equal(pickLatest([null,local],want,new Set()),local);
+  assert.equal(pickLatest([local],want,new Set(['a'])),null);
+  assert.equal(pickLatest([local],{...want,mode:'random'},new Set()),null);
+  assert.equal(pickLatest([remote,other],null,new Set()),other);
 });

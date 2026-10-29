@@ -7,4 +7,6 @@ function statsFromH(h,moduleOf){const answers={},history=[];for(const[id,ok,at]o
 function upsert(list,s,max){return[s,...list.filter(x=>x.id!==s.id)].sort((a,b)=>b.at-a.at).slice(0,max)}
 // End-of-session summary: last answer per question counts.
 function endSummary(history,pool){const res=new Map();history.forEach(x=>res.set(x.id,x.ok));const k=[...res.values()].filter(Boolean).length;return{k,n:res.size,missed:pool.filter(q=>res.get(q.id)===false)}}
-if(typeof module!=='undefined'&&module.exports)module.exports={shuf,lastErrors,sameSession,statsFromH,upsert,endSummary};
+// Most recent resumable session among candidates (skip: Set of ids to ignore; want: selection to match, or null).
+function pickLatest(list,want,skip){return list.filter(s=>s&&s.ids&&s.ids.length&&!skip.has(s.id)&&(!want||sameSession(s,want))).sort((a,b)=>b.at-a.at)[0]||null}
+if(typeof module!=='undefined'&&module.exports)module.exports={shuf,lastErrors,sameSession,statsFromH,upsert,endSummary,pickLatest};
