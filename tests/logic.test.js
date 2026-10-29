@@ -1,6 +1,6 @@
-const test=require('node:test');
+﻿const test=require('node:test');
 const assert=require('node:assert/strict');
-const{shuf,lastErrors,sameSession,statsFromH,upsert,endSummary,pickLatest}=require('../js/logic.js');
+const{shuf,lastErrors,sameSession,statsFromH,upsert,endSummary,pickLatest,mergeSessions}=require('../js/logic.js');
 
 const seq=vals=>{let i=0;return()=>vals[i++%vals.length]};
 
@@ -97,4 +97,14 @@ test('pickLatest : reprend la session la plus récente qui correspond', ()=>{
   assert.equal(pickLatest([local],want,new Set(['a'])),null);
   assert.equal(pickLatest([local],{...want,mode:'random'},new Set()),null);
   assert.equal(pickLatest([remote,other],null,new Set()),other);
+});
+
+test('mergeSessions : union par id, version la plus récente, suppressions respectées', ()=>{
+  const local=[{id:'a',at:10,pos:1},{id:'b',at:50}];
+  const remote=[{id:'a',at:30,pos:5},{id:'c',at:20},{id:'d',at:60}];
+  const r=mergeSessions(local,remote,25,new Set(['d']));
+  assert.deepEqual(r.map(s=>s.id),['b','a','c']);
+  assert.equal(r.find(s=>s.id==='a').pos,5);
+  assert.equal(mergeSessions(undefined,remote,2,new Set()).length,2);
+  assert.deepEqual(mergeSessions([null,{at:1}],[],25,new Set()),[]);
 });

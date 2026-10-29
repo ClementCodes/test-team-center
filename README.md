@@ -38,10 +38,14 @@ tests/                  tests unitaires (non publiés)
 
 L'ordre de chargement des scripts dans `index.html` est important.
 
-## Données Firestore
+## Données
 
-Un document par utilisateur : `users/{uid}` avec les champs `session` (session active),
-`paused` et `finished` (sessions en pause / terminées, 25 max chacune).
+Tout est d'abord enregistré **sur l'appareil** (localStorage, clé `tcStoreV2` : session en cours, en pause, terminées),
+avec ou sans connexion. Rien ne se perd au rechargement de la page.
+
+Connecté avec Google, ces données sont **fusionnées** avec Firestore (`users/{uid}` : champs `session`, `paused`,
+`finished`, `gone`) : union par identifiant de session, la version la plus récente gagne, les sessions supprimées
+(`gone`) ne réapparaissent pas. 25 sessions max par liste.
 Les règles n'autorisent chaque utilisateur à lire et écrire que son propre document.
 
 ## Tester en local
@@ -74,7 +78,7 @@ npm run e2e                                              # version locale
 npm run e2e -- https://team-center-test-93116.web.app/   # site en ligne
 ```
 
-`e2e/resume.e2e.js` vérifie que la position est conservée après plusieurs rechargements (Ctrl + Maj + R), un changement d'onglet et l'ouverture d'un nouvel onglet.
+`e2e/resume.e2e.js` vérifie que la position et les statistiques (sessions en cours / en pause) sont conservées après plusieurs rechargements (Ctrl + Maj + R), un changement d'onglet et l'ouverture d'un nouvel onglet.
 
 ## Déployer
 

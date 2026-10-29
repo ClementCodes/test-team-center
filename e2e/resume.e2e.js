@@ -36,6 +36,20 @@ const check=(name,got,want)=>{const ok=got===want;if(!ok)failed++;console.log((o
 
     await p.close();p=await open();await start(p);
     check('nouvel onglet reprend \u00e0 la question 2',await counter(p),'2 / 353');
+
+    // Start another sub-topic: the first session must go to "paused" and survive reloads in the stats tab.
+    await p.click('#quit');
+    const sub=await p.$$eval('#subtopic option',o=>o[1].value);
+    await p.selectOption('#subtopic',sub);await start(p);
+    await p.click('#answers button.answer >> nth=0');await p.click('#validate');
+    await hardReload(p);await hardReload(p);
+    await p.click('.tabs button[data-tab=stats]');
+    const statsText=await p.textContent('#sessStats');
+    check('stats : session en cours conserv\u00e9e',/Session en cours/.test(statsText),true);
+    check('stats : session en pause conserv\u00e9e',/Sessions en pause/.test(statsText)&&/Question 2\/353/.test(statsText),true);
+
+    await p.close();p=await open();await p.click('.tabs button[data-tab=stats]');
+    check('stats conserv\u00e9es dans un nouvel onglet',/Sessions en pause/.test(await p.textContent('#sessStats')),true);
     check('aucune erreur JavaScript',errors.join(' | '),'');
   }finally{await browser.close();if(server)server.close()}
   process.exit(failed?1:0);

@@ -9,4 +9,6 @@ function upsert(list,s,max){return[s,...list.filter(x=>x.id!==s.id)].sort((a,b)=
 function endSummary(history,pool){const res=new Map();history.forEach(x=>res.set(x.id,x.ok));const k=[...res.values()].filter(Boolean).length;return{k,n:res.size,missed:pool.filter(q=>res.get(q.id)===false)}}
 // Most recent resumable session among candidates (skip: Set of ids to ignore; want: selection to match, or null).
 function pickLatest(list,want,skip){return list.filter(s=>s&&s.ids&&s.ids.length&&!skip.has(s.id)&&(!want||sameSession(s,want))).sort((a,b)=>b.at-a.at)[0]||null}
-if(typeof module!=='undefined'&&module.exports)module.exports={shuf,lastErrors,sameSession,statsFromH,upsert,endSummary,pickLatest};
+// Union of two session lists by id (most recent version wins), without deleted ids, newest first.
+function mergeSessions(a,b,max,gone){const m=new Map();for(const s of[...(a||[]),...(b||[])]){if(!s||!s.id||(gone&&gone.has(s.id)))continue;const p=m.get(s.id);if(!p||(s.at||0)>(p.at||0))m.set(s.id,s)}return[...m.values()].sort((x,y)=>(y.at||0)-(x.at||0)).slice(0,max)}
+if(typeof module!=='undefined'&&module.exports)module.exports={shuf,lastErrors,sameSession,statsFromH,upsert,endSummary,pickLatest,mergeSessions};
