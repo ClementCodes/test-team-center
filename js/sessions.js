@@ -16,7 +16,7 @@ window.errIds=function(){const e=[];if(user){if(active)e.push(...(active.h||[]))
 const fromH=h=>statsFromH(h,id=>(qm.get(id)||{}).module);
 const cnt=s=>{const h=s.h||[],k=h.filter(x=>x[1]).length;return h.length?' \u00b7 '+k+' bonne(s) \u00b7 '+(h.length-k)+' mauvaise(s)':''};
 const title=s=>(s.module==='*'?'Tous modules':s.module)+' \u00b7 '+(s.subtopic==='*'?'Tous sous-th\u00e8mes':s.subtopic);
-const dt=s=>new Date(s.at).toLocaleDateString('fr-FR');
+const dt=s=>{const d=new Date(s.at);return d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})};
 const lab=s=>title(s)+' \u00b7 '+(s.pos+1)+'/'+s.ids.length+' \u00b7 '+dt(s)+cnt(s);
 const ref=()=>doc(db,'users',user.uid);
 function snap(){if(!pool.length)return null;const c=cur||sel();return{id:activeId||newId(),ids:pool.map(q=>q.id),pos,module:c.module,subtopic:c.subtopic,mode:c.mode||'order',h:stats.history.map(x=>[x.id,x.ok?1:0,x.at]),at:Date.now(),done:pos===pool.length-1&&answered,progressed:pos>0||answered}}
