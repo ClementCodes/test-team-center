@@ -50,6 +50,10 @@ const check=(name,got,want)=>{const ok=got===want;if(!ok)failed++;console.log((o
 
     await p.close();p=await open();await p.click('.tabs button[data-tab=stats]');
     check('stats conserv\u00e9es dans un nouvel onglet',/Sessions en pause/.test(await p.textContent('#sessStats')),true);
+
+    await p.click('#sessStats button:has-text("Refaire ce quiz") >> nth=0');
+    await p.waitForSelector('#quiz:not(.hidden)');
+    check('Refaire ce quiz repart \u00e0 la question 1',await counter(p),'1 / 353');
     check('aucune erreur JavaScript',errors.join(' | '),'');
   }finally{await browser.close();if(server)server.close()}
   process.exit(failed?1:0);
